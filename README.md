@@ -1,2 +1,2 @@
 # HaberlesmeMimarileri
-Domain Driven Design yaklaşımı ile tasarlanan HaberlesmeMimarileri solution u. Tüm mesajları sıralı gönder/al, tekil mesaj gönder/al, işleyen mesajlaşma akışını durdur, mesaj setini .jsondan veya in-memory alandan oku gibi yeteneklere sahip.
+Domain Driven Design yaklaşımı ile tasarlanan HaberlesmeMimarileri solution u. Tüm mesajları sıralı gönder/al, tekil mesaj gönder/al, işleyen mesajlaşma akışını durdur, mesaj setini .jsondan veya in-memory alandan oku gibi yeteneklere sahip. Gerçek haberleşme arayüzlerinin(FTDI,Serial, ethernet...) yerine Mock olarak bir FakeLoopbackTransport tanımlanmış olup, mesaj read/write işlemleri bu mock/fake arayüzden gerçekleşmektedir
