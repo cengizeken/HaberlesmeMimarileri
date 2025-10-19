@@ -46,6 +46,9 @@
     <Compile Include="Evaluation\MessageDefinition.cs" />
     <Compile Include="Messages\RxMessage.cs" />
     <Compile Include="Messages\TxMessage.cs" />
+    <Compile Include="Parsing\FieldMappedRxMessageParser.cs" />
+    <Compile Include="Parsing\Fixed4ByteRxMessageParser.cs" />
+    <Compile Include="Parsing\IRxMessageParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\IMessageDefinitionRepository.cs" />
   </ItemGroup>

@@ -43,6 +43,8 @@
   <ItemGroup>
     <Compile Include="Discovery\CardIdDiscovery.cs" />
     <Compile Include="Discovery\ICardIdDiscovery.cs" />
+    <Compile Include="Messaging\FramedMessageClientV1.cs" />
+    <Compile Include="Messaging\FramedMessageClient.cs" />
     <Compile Include="Messaging\IMessageClient.cs" />
     <Compile Include="Messaging\MessageClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

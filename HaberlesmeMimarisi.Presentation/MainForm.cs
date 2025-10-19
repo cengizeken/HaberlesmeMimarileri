@@ -2,6 +2,7 @@
 using HaberlesmeMimarisi.App.Messaging;
 using HaberlesmeMimarisi.Core.Messaging;
 using HaberlesmeMimarisi.Domain.Messages;
+using HaberlesmeMimarisi.Domain.Parsing;
 using HaberlesmeMimarisi.Domain.Repositories;
 using HaberlesmeMimarisi.Infrastructure.Transport;
 using HaberlesmeMimarisi.Repository.Json;
@@ -26,7 +27,7 @@ namespace HaberlesmeMimarisi.Presentation
         private IMessageClient _client;
         private ICardIdDiscovery _cardDisc;
         private byte _cardId;
-
+        FramedMessageClient _framedClient;
         private CancellationTokenSource _cts;
         private volatile bool _busy;
 
@@ -46,21 +47,24 @@ namespace HaberlesmeMimarisi.Presentation
             // _transport = new SerialPortTransport("COM5", 115200);
             _transport.Open();
 
-            _client = new MessageClient(_transport);
+            //_client = new MessageClient(_transport);  //çalışıyor
             _cardDisc = new CardIdDiscovery(_transport);
-
             _cardId = _cardDisc.DiscoverCardId();
 
-            // Load definitions via repository
-            IMessageDefinitionRepository repo = new JsonMessageDefinitionRepository();//works for in-memory message list
+            IFrameReader fr = new FixedLengthFrameReader(_transport, frameLength: 4);
+            IRxMessageParser parser = new Fixed4ByteRxMessageParser();
+            _framedClient = new FramedMessageClient(_transport, fr, parser);
+            
+           // Load definitions via repository
+           IMessageDefinitionRepository repo = new JsonMessageDefinitionRepository();//works for in-memory message list
+
+            
              /*
-            // JSON’dan yükleme
+            // JSON’dan yükleme şeklindeki aşağıdaki kod bloğu da çalışıyor
             string jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SampleMessageList.json");
             jsonPath = @"C:\projeler\CihazKutuphanesi\HaberlesmeMimarileri\HaberlesmeMimarisi\HaberlesmeMimarisi.Repository\bin\Debug\SampleMessageList.json";
             //@C:\projeler\CihazKutuphanesi\HaberlesmeMimarileri\HaberlesmeMimarisi\HaberlesmeMimarisi.Repository\bin\Debug\SampleMessageList.json
-            //C:\projeler\CihazKutuphanesi\HaberlesmeMimarileri\HaberlesmeMimarisi\HaberlesmeMimarisi.Repository\bin\Debug\SampleMessageList.json
-              
-            
+            //C:\projeler\CihazKutuphanesi\HaberlesmeMimarileri\HaberlesmeMimarisi\HaberlesmeMimarisi.Repository\bin\Debug\SampleMessageList.json            
             IMessageDefinitionRepository repo = new FileBackedMessageDefinitionRepository(jsonPath); */
                     
 
@@ -138,7 +142,7 @@ namespace HaberlesmeMimarisi.Presentation
                 var rx = await Task.Run(() =>
                 {
                     ct.ThrowIfCancellationRequested();
-                    return _client.Request(tx, timeoutMs: 200);
+                    return _framedClient.Request(tx, timeoutMs: 200);
                 }, ct);
 
                 var eval = def.Evaluator.Evaluate(def, tx, rx);
